@@ -23,7 +23,12 @@ class Tile{
     }
 
     setColor(c){
-        this.color = c;
+        if (c == 0){
+            this.color = 0
+        }
+        else{
+            this.color = c;
+        }
     }
 
     getColor(){

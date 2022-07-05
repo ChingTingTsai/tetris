@@ -10,75 +10,53 @@ const ctx = setUpCanvas()
 const world = new World(ctx)
 world.generateBrick()
 world.draw()
-// while (true){
+
 document.addEventListener("keyup", (event)=>{
     if(event.key == "ArrowUp"){
-        // console.log("up")
         world.rotateBrick()
-        
     }
     else if(event.key == "ArrowLeft"){
-        // console.log("left")
         world.moveLeft()
     }
     else if(event.key == "ArrowRight"){
-        // console.log("right")
         world.moveRight()
+    }
+    else if(event.key == "ArrowDown"){
+        world.moveDown()
     }
     world.draw()
 })
-window.setInterval(()=>{
-    world.dropBrick()
-    world.draw()
-}, 800)
-
-// }
-
-
-
-// const lb = new tBrick();
-// document.addEventListener("keyup", (event)=>{
-//     if(event.key == "ArrowUp"){
-//         rotateBrick(lb)
-//     }
-// })
 // window.setInterval(()=>{
-//     drawBrick(ctx, lb);
+//     end = world.dropBrick()
+    
+//     if(end == true){
+//         world.resetWorld()
+//     }
+//     world.draw()
+    
 // }, 500)
 
+let interval;
+let time = 500;
+let iter = 0;
+function run(){
+    window.clearInterval(interval);
 
-
-// const { ABrick, LBrick, ZBrick, IBrick, OBrick } = require("./brick");
-
-// function drawBrick(ctx, brick){
-//     const BRICK_WIDTH = 50;
-
-//     for(let y=0;y<brick.getGridHeight();y++){
-//         for(let x=0;x<brick.getGridWidth();x++){
-//             const tile = brick.getGridTile(x, y);
-//             if(tile.isFill()){
-//                 ctx.fillStyle = "#000000"
-//             }else{
-//                 ctx.fillStyle = "#FFFFFF"
-//             }
-
-//             ctx.fillRect(x * BRICK_WIDTH, y * BRICK_WIDTH, BRICK_WIDTH, BRICK_WIDTH);
-//         }
-//     }
-// }
-
-// function bootstrap(){
-//     const canvas = document.getElementById("canvas");
-//     const ctx = canvas.getContext("2d");
-//     const brick = new ABrick();
+    end = world.dropBrick()
     
-//     document.addEventListener("keyup", (event)=>{
-//         if(event.key == "ArrowUp"){
-            
-//             brick.setRotateState((brick.getRotateState() + 1) % 4);
-//             drawBrick(ctx, brick);
-//         }
-//     })
-// }
+    if(end == true){
+        world.resetWorld()
+        time = 500
+        iter = 0
+    }
+    world.draw()
+    iter += 1
+    
+    if (time > 100 && iter % 100 == 0){
+        console.log(time)
+        time -= 20;
+    }
 
-// bootstrap();
+    interval = window.setInterval(run, time)
+}
+run();

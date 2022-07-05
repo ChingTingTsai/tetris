@@ -14,8 +14,8 @@ class grid{
         return this.gridArray;
     }
 
-    colorGrid(i, j){
-        this.gridArray[i][j].setColor(1);
+    colorGrid(i, j, color){
+        this.gridArray[i][j].setColor(color);
     }
 
     getTile(x, y){

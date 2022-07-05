@@ -1,17 +1,36 @@
 const grid = require("./grid")
+
+colorLst = ["#0341AE","#72CB3B","#FFD500","#FF971C","#FF3213","#800080"]
+let prevColor = 0;
 class brick{
     gridItem;
     numRotate;
     startX
     startY
     bottomCoord
-    
+    worldWidth = 7
+    color
+    width = 4
+    height = 4
+    emptyFirstRow = 0
+    emptyFirstCol = 0
+
     constructor(){
         this.gridItem = new grid();
-        this.numRotate = 0;
-        this.startX = 0
+        this.numRotate = Math.floor(Math.random()* 4);
+        this.startX = Math.floor(Math.random()* this.worldWidth)
         this.startY = 0
         this.bottomCoord = []
+        this.color = this.setBrickColor()
+    }
+
+    setBrickColor(){
+        let randNum = Math.floor(Math.random()* 6)
+        while(randNum == prevColor){
+            randNum = Math.floor(Math.random()* 6)
+        }
+        prevColor = randNum
+        return colorLst[randNum]
     }
 
     getX(){
@@ -50,6 +69,13 @@ class brick{
         return this.bottomCoord
     }
     
+    getWidthHeight(){
+        return [this.width,this.height]
+    }
+
+    getEmptyRowCol(){
+        return [this.emptyFirstRow, this.emptyFirstCol]
+    }
 }
 // (x,y)
 class iBrick extends brick{
@@ -60,16 +86,18 @@ class iBrick extends brick{
     getGridItem(){
         this.clearGrid()
         if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(2, 1);
-            this.gridItem.colorGrid(3, 1);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
+            this.gridItem.colorGrid(3, 1, this.color);
+            this.emptyFirstRow = 1
         }
         else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(1, 2);
-            this.gridItem.colorGrid(1, 3);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
+            this.gridItem.colorGrid(1, 3, this.color);
+            this.emptyFirstCol = 1
         }
         return this.gridItem
     }
@@ -104,6 +132,18 @@ class iBrick extends brick{
         }
         return this.rightCoord
     }
+
+    getWidthHeight(){
+        if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
+            this.width = 4
+            this.height = 1
+        }
+        else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
+            this.width = 1
+            this.height = 4
+        }
+        return [this.width,this.height]
+    }
 }
 
 class zBrick extends brick{
@@ -115,17 +155,17 @@ class zBrick extends brick{
         this.clearGrid()
         if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
             
-            this.gridItem.colorGrid(0, 0);
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(1, 2);
+            this.gridItem.colorGrid(0, 0, this.color);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
         }
         else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
             
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(2, 0);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(2, 0, this.color);
         }
         return this.gridItem
     }
@@ -160,6 +200,18 @@ class zBrick extends brick{
         }
         return this.rightCoord
     }
+
+    getWidthHeight(){
+        if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
+            this.width = 2
+            this.height = 3
+        }
+        else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
+            this.width = 3
+            this.height = 2
+        }
+        return [this.width,this.height]
+    }
 }
 
 class lBrick extends brick{
@@ -170,28 +222,30 @@ class lBrick extends brick{
     getGridItem(){
         this.clearGrid()
         if(this.numRotate % 4 == 0){
-            this.gridItem.colorGrid(0, 0);
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(2, 0);
-            this.gridItem.colorGrid(2, 1);
+            this.gridItem.colorGrid(0, 0, this.color);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(2, 0, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
         }
         else if(this.numRotate % 4 == 1){
-            this.gridItem.colorGrid(2, 0);
-            this.gridItem.colorGrid(2, 1);
-            this.gridItem.colorGrid(2, 2);
-            this.gridItem.colorGrid(1, 2);
+            this.gridItem.colorGrid(2, 0, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
+            this.gridItem.colorGrid(2, 2, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
+            this.emptyFirstCol = 1
         }
         else if(this.numRotate % 4 == 2){
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(0, 2);
-            this.gridItem.colorGrid(1, 2);
-            this.gridItem.colorGrid(2, 2);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(0, 2, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
+            this.gridItem.colorGrid(2, 2, this.color);
+            this.emptyFirstRow = 1
         }
         else if(this.numRotate % 4 == 3){
-            this.gridItem.colorGrid(0, 0);
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(0, 2);
+            this.gridItem.colorGrid(0, 0, this.color);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(0, 2, this.color);
         }
         return this.gridItem
     }
@@ -243,6 +297,19 @@ class lBrick extends brick{
         }
         return this.rightCoord
     }
+
+    getWidthHeight(){
+        if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
+            this.width = 3
+            this.height = 2
+        }
+        else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
+            this.width = 2
+            this.height = 3
+        }
+        
+        return [this.width,this.height]
+    }
 }
 
 class tBrick extends brick{
@@ -253,28 +320,30 @@ class tBrick extends brick{
     getGridItem(){
         this.clearGrid()
         if(this.numRotate % 4 == 0){
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(1, 2);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
         }
         else if(this.numRotate % 4 == 1){
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(2, 1);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
         }
         else if(this.numRotate % 4 == 2){
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(1, 2);
-            this.gridItem.colorGrid(1, 0);
-            this.gridItem.colorGrid(2, 1);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
+            this.gridItem.colorGrid(1, 0, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
+            this.emptyFirstCol = 1
         }
         else if(this.numRotate % 4 == 3){
-            this.gridItem.colorGrid(0, 1);
-            this.gridItem.colorGrid(1, 1);
-            this.gridItem.colorGrid(2, 1);
-            this.gridItem.colorGrid(1, 2);
+            this.gridItem.colorGrid(0, 1, this.color);
+            this.gridItem.colorGrid(1, 1, this.color);
+            this.gridItem.colorGrid(2, 1, this.color);
+            this.gridItem.colorGrid(1, 2, this.color);
+            this.emptyFirstRow = 1
         }
         return this.gridItem
     }
@@ -325,6 +394,19 @@ class tBrick extends brick{
             this.rightCoord = [[2, 2], [3, 1]]
         }
         return this.rightCoord
+    }
+
+    getWidthHeight(){
+        if(this.numRotate % 4 == 0 || this.numRotate % 4 == 2){
+            this.width = 2
+            this.height = 3
+        }
+        else if(this.numRotate % 4 == 1 || this.numRotate % 4 == 3){
+            this.width = 3
+            this.height = 2
+        }
+        
+        return [this.width,this.height]
     }
 }
 
